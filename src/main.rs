@@ -22,31 +22,18 @@ struct Board {
 }
 
 impl Symbol {
-    fn new() -> Symbol { // no input required, random symbols in range of colors
+    fn new() -> Symbol {
         Symbol {
-            color: Symbol::randomColor(),
-            size: Symbol::randomSize(),
-            stype: Symbol::randomStype(),
+            color: Symbol::random_item(&mut [(0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255)]),
+            size: Symbol::random_item(&mut ["large", "medium", "small"]),
+            stype: Symbol::random_item(&mut ["puzzle", "mushroom", "heart", "leaf"]),
         }
     }
 
-    //TODO: Let user set colors via config, loading and validation needed
-    fn randomColor() -> (u8,u8,u8) {
+    fn random_item<T>(items: &mut [T]) -> T {
         let mut rng = rand::thread_rng();
-        let colors: [(u8,u8,u8);4] = [(0,0,0),(255,0,0),(0,255,0),(0,0,255)];
-        *colors.choose(&mut rng).unwrap()
-    }
-
-    fn randomStype() -> &'static str {
-        let mut rng = rand::thread_rng();
-        let stypes = ["puzzle","mushroom","heart","leaf"];
-        *stypes.choose(&mut rng).unwrap()
-    }
-
-    fn randomSize() -> &'static str {
-        let mut rng = rand::thread_rng();
-        let sizes = ["large","medium","small"]; // TODO: What happens if colors or sizes are taken?
-        *sizes.choose(&mut rng).unwrap()
+        items.shuffle(&mut rng);
+        *items.choose(&mut rng).unwrap()
     }
 }
 
