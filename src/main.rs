@@ -41,11 +41,11 @@ impl Stone {
     fn new() -> Stone { // no input required, random placement
         Stone {
             radius: 25.0, // 50px initially TODO: make this a function of the amount of stones (maybe dependent on players and the size of the board)
-            symbols: Stone::addSymbols() // TODO: make sure the sizes, colors, and types are evenly distributed on each stone
+            symbols: Stone::add_symbols() // TODO: make sure the sizes, colors, and types are evenly distributed on each stone
         }
     }
 
-    fn addSymbols() -> [Symbol;4] {
+    fn add_symbols() -> [Symbol;4] {
         let mut symbols = [Symbol::new(), Symbol::new(), Symbol::new(), Symbol::new()];
         symbols
     }
@@ -54,31 +54,28 @@ impl Stone {
 impl Board {
     fn new(width: usize, height: usize, samount: usize) -> Board {
         Board {
-            width: width,
-            height: height,
-            samount: samount, // TODO: make this a function of the amount of players
+            width,
+            height,
+            samount,
             stones: HashMap::new(),
-        } // create a set of random stones across the board
+        }
     }
 
     fn place_stones(&mut self) {
-        // TODO: create a list of coordinates based on the size of each Stone which is randomly
-        // distributed, but not overlapping... let's start with a matrix first.
+        // Randomly place stones without overlapping
+        let mut rng = rand::thread_rng();
 
-        // split the size of the board into equal regions based on smaount and get the coordinate
-        // in its middle to place the center of the stone there
-        // TODO: evaluate, if this needs to be in the backend or frontend, iteration 1: Backend
-        // Calculate the number of rows and columns
+        for _ in 0..self.samount {
+            let x = rng.gen_range(0, self.width);
+            let y = rng.gen_range(0, self.height);
 
-        let nrows = (self.samount as f64 / (self.width as f64 / self.height as f64)).sqrt().ceil() as usize;
-        let ncols = (self.samount as f64 / (self.height as f64 / self.width as f64)).sqrt().ceil() as usize;
-
-        for i in 1..=ncols {
-            for j in 1..=nrows {
-                let x = (i * (self.samount/ncols) - (self.samount/ncols)/2) as usize;
-                let y = (j * (self.samount/nrows) - (self.samount/nrows)/2) as usize;
-                self.stones.insert((x,y), Stone::new());
+            // Ensure the position is not occupied
+            while self.stones.contains_key(&(x, y)) {
+                let x = rng.gen_range(0, self.width);
+                let y = rng.gen_range(0, self.height);
             }
+
+            self.stones.insert((x, y), Stone::new());
         }
     }
 }
@@ -86,7 +83,8 @@ impl Board {
 fn main() {
     let mut board = Board::new(800, 500, 24);
     board.place_stones();
-    for (key, value) in board.stones.into_iter() {
+    for (key, value) in &board.stones {
         println!("{:?} - {:?}", key, value);
     }
 }
+
