@@ -7,3 +7,7 @@ edition = "2021"
 
 [dependencies]
 rand = "0.8.5"
+yew = { version = "0.21.0", features = ["csr"] }
+
+[build]
+rustflags = [ "-C linker=lld" ]
