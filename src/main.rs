@@ -5,20 +5,23 @@ use rand::seq::SliceRandom;
 struct Symbol {
     color: (u8,u8,u8),
     size: &'static str,
-    stype: &'static str,
+    shape: &'static str,
 }
 
 #[derive(Debug)]
-struct Stone {
+struct Piece {
     radius: f32,
-    symbols: [Symbol; 4]
+    symbols: [Symbol; 3], // Symbol Position will be handled on Frontend
+    color: (u8,u8,u8),
 }
 
 struct Board {
     width: usize,
     height: usize,
     samount: usize,
-    stones: HashMap<(usize,usize),Stone> // Tuple with Coords
+    color: (u8,u8,u8),
+    stones: HashMap<(usize,usize),Piece> // Tuple with Coords - just for now. Also on Frontend
+    // later
 }
 
 impl Symbol {
@@ -26,18 +29,18 @@ impl Symbol {
         Symbol {
             color: Symbol::randomColor(),
             size: Symbol::randomSize(),
-            stype: Symbol::randomStype(),
+            shape: Symbol::randomShape(),
         }
     }
 
     //TODO: Let user set colors via config, loading and validation needed
     fn randomColor() -> (u8,u8,u8) {
         let mut rng = rand::thread_rng();
-        let colors: [(u8,u8,u8);4] = [(0,0,0),(255,0,0),(0,255,0),(0,0,255)];
+        let colors: [(u8,u8,u8);3] = [(255,0,0),(0,255,0),(0,0,255)]; // Color theming? What about pastel colors?
         *colors.choose(&mut rng).unwrap()
     }
 
-    fn randomStype() -> &'static str {
+    fn randomShape() -> &'static str {
         let mut rng = rand::thread_rng();
         let stypes = ["puzzle","mushroom","heart","leaf"];
         *stypes.choose(&mut rng).unwrap()
@@ -50,16 +53,17 @@ impl Symbol {
     }
 }
 
-impl Stone {
-    fn new() -> Stone { // no input required, random placement
-        Stone {
+impl Piece {
+    fn new() -> Piece { // no input required, random placement
+        Piece {
+            color: (255,255,255), // TODO: Dark mode? What up?!
             radius: 25.0, // 50px initially TODO: make this a function of the amount of stones (maybe dependent on players and the size of the board)
-            symbols: Stone::addSymbols() // TODO: make sure the sizes, colors, and types are evenly distributed on each stone
+            symbols: Piece::addSymbols() // TODO: make sure the sizes, colors, and types are evenly distributed on each stone
         }
     }
 
-    fn addSymbols() -> [Symbol;4] {
-        let mut symbols = [Symbol::new(), Symbol::new(), Symbol::new(), Symbol::new()];
+    fn addSymbols() -> [Symbol;3] {
+        let mut symbols = [Symbol::new(), Symbol::new(), Symbol::new()];
         symbols
     }
 }
@@ -71,6 +75,7 @@ impl Board {
             height: height,
             samount: samount, // TODO: make this a function of the amount of players
             stones: HashMap::new(),
+            color: (0,0,0),
         } // create a set of random stones across the board
     }
 
@@ -90,7 +95,7 @@ impl Board {
             for j in 1..=nrows {
                 let x = (i * (self.samount/ncols) - (self.samount/ncols)/2) as usize;
                 let y = (j * (self.samount/nrows) - (self.samount/nrows)/2) as usize;
-                self.stones.insert((x,y), Stone::new());
+                self.stones.insert((x,y), Piece::new());
             }
         }
     }
