@@ -13,6 +13,7 @@ pub struct Symbol {
 
 #[derive(Debug)]
 pub struct Stone {
+    pub color: (u8,u8,u8),
     pub radius: usize,
     symbols: [Symbol; 4]
 }
@@ -43,7 +44,8 @@ impl Stone {
     fn new() -> Stone { // no input required, random placement
         Stone {
             radius: 25, // 50px initially TODO: make this a function of the amount of stones (maybe dependent on players and the size of the board)
-            symbols: Stone::add_symbols() // TODO: make sure the sizes, colors, and types are evenly distributed on each stone
+            symbols: Stone::add_symbols(), // TODO: make sure the sizes, colors, and types are evenly distributed on each stone
+            color: Symbol::random_item(&mut [(255, 0, 0), (0, 255, 0), (0, 0, 255)]),
         }
     }
 
