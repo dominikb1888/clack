@@ -7,7 +7,7 @@ fn RenderStones() -> Html {
         board.place_stones();
         let stones = board.stones;
 
-        stones.iter().map(|((x, y), stone)| {
+        stones.iter().map( | ((x, y), stone) | {
             let cx = *x + stone.radius / 2;
             let cy = *y + stone.radius / 2;
             let color = format!("rgb({},{},{})", stone.color.0.to_string(), stone.color.1.to_string(), stone.color.2.to_string());

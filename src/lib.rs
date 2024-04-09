@@ -15,7 +15,7 @@ pub struct Symbol {
 pub struct Stone {
     pub color: (u8,u8,u8),
     pub radius: usize,
-    symbols: [Symbol; 4]
+    symbols: [Symbol; 3]
 }
 
 pub struct Board {
@@ -28,9 +28,9 @@ pub struct Board {
 impl Symbol {
     fn new() -> Symbol {
         Symbol {
-            color: Symbol::random_item(&mut [(0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255)]),
+            color: Symbol::random_item(&mut [(0, 255, 255), (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0)]),
             size: Symbol::random_item(&mut ["large", "medium", "small"]),
-            stype: Symbol::random_item(&mut ["puzzle", "mushroom", "heart", "leaf"]),
+            stype: Symbol::random_item(&mut ["puzzle", "mushroom", "heart", "leaf", "arrow"]),
         }
     }
 
