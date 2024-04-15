@@ -49,8 +49,8 @@ impl Stone {
         }
     }
 
-    fn add_symbols() -> [Symbol;4] {
-        let symbols = [Symbol::new(), Symbol::new(), Symbol::new(), Symbol::new()];
+    fn add_symbols() -> [Symbol;3] {
+        let symbols = [Symbol::new(), Symbol::new(), Symbol::new()];
         symbols
     }
 }
