@@ -1,8 +1,11 @@
 use std::collections::HashMap;
+
+use web_time::{Instant, SystemTime};
 use rand::prelude::SliceRandom;
 use rand::Rng;
-use yew::prelude::*;
 
+const COLORS: [(u8,u8,u8); 5]= [(0, 255, 255), (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0)];
+const SHAPES: [&str; 5] = ["puzzle", "mushroom", "heart", "leaf", "arrow"];
 
 #[derive(Debug)]
 pub struct Symbol {
@@ -28,9 +31,9 @@ pub struct Board {
 impl Symbol {
     fn new() -> Symbol {
         Symbol {
-            color: Symbol::random_item(&mut [(0, 255, 255), (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0)]),
+            color: Symbol::random_item(&mut COLORS),
             size: Symbol::random_item(&mut ["large", "medium", "small"]),
-            stype: Symbol::random_item(&mut ["puzzle", "mushroom", "heart", "leaf", "arrow"]),
+            stype: Symbol::random_item(&mut SHAPES),
         }
     }
 
@@ -45,7 +48,7 @@ impl Stone {
         Stone {
             radius: 25, // 50px initially TODO: make this a function of the amount of stones (maybe dependent on players and the size of the board)
             symbols: Stone::add_symbols(), // TODO: make sure the sizes, colors, and types are evenly distributed on each stone
-            color: Symbol::random_item(&mut [(255, 0, 0), (0, 255, 0), (0, 0, 255)]),
+            color: Symbol::random_item(&mut COLORS),
         }
     }
 
@@ -75,8 +78,8 @@ impl Board {
 
             // Ensure the position is not occupied
             while self.stones.contains_key(&(x, y)) {
-                let x = rng.gen_range(0..self.width);
-                let y = rng.gen_range(0..self.height);
+                let x = rng.gen_range(0..self.width * 2);
+                let y = rng.gen_range(0..self.height * 2);
             }
 
             self.stones.insert((x, y), Stone::new());
@@ -84,4 +87,45 @@ impl Board {
     }
 }
 
+//
+// impl Scoreboard {
+//     pub fn from_board(board: &Board) -> Self {
+//         let mut scoreboard_data = ScoreboardData::default();
+//         for (coordinates, _) in &board.stones {
+//             scoreboard_data.stone_clicks.insert(*coordinates);
+//         }
+//         scoreboard_data
+//     }
+//
+//      fn update_score(&mut self, player: &str) {
+//         *self.scores.entry(player.to_string()).or_insert(0) += 1;
+//     }
+//
+//     pub fn put_on_stack(&mut self, coords: (usize,usize), time: SystemTime, hostname: String) -> () {
+//     // Decide whether a click was -> How can we be aware of the current dice?
+//     // a. on the right stone, given the current dice
+//     // b. before any other players click, if two players clicked on the same stone at about the
+//     // same time
+//     // TODO: Would be nice to have a count of all Symbols on all stones as reference. For this
+//     // using the actual stones is necessary
+//     //
+//         ()
+//
+//     }
+//
+//     pub fn throw_dice() -> (String, String) {
+//         let color_dice = &mut COLORS.to_vec();
+//         let shape_dice = &mut SHAPES.to_vec();
+//         color_dice.push("Empty");
+//         shape_dice.push("Empty");
+//
+//         (Symbol::random_item(color_dice), Symbol::random_item(shape_dice))
+//     }
+//
+//     // Duplicate of Symbol... Trait? Random?
+//     fn random_item<T: Clone>(items:&Vec<String>) -> String {
+//         let mut rng = rand::thread_rng();
+//         items.choose(&mut rng).unwrap().clone()
+//     }
 
+// }
